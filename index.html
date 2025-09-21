@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Random Aesthetic Generator</title>
+  <!-- Favicon for GitHub Pages -->
+  <link rel="icon" type="image/png" href="favicon.png">
   <!-- UI shell fonts only (neutral system) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,13 +13,6 @@
   <!-- Dynamic Google Fonts for generated pairings will be injected below -->
   <link id="gf-dynamic" rel="stylesheet" href="" media="print" onload="this.media='all'">
   <style>
-    /* ========================
-       App Shell CSS (Neutral)
-       - Modern, minimal, responsive grid
-       - Dark mode toggled via .theme-dark on <html>
-       - The generated preview area uses its own fonts/colors; the shell stays neutral
-       ======================== */
-
     :root {
       --bg: #f9fafb;            /* light neutral */
       --text: #0f172a;          /* slate-900 */
@@ -32,157 +27,132 @@
       --swatch-size: 56px;
       --transition: 200ms ease;
     }
-
-    html.theme-dark {
-      --bg: #1e1e1e;
-      --text: #e5e7eb;
-      --muted: #a1a1aa;         /* zinc-400 */
-      --card: #262626;          /* neutral-800 */
-      --border: #3f3f46;        /* zinc-700 */
-      --shadow: 0 12px 28px rgba(0,0,0,0.35);
-      --accent: #6366f1;
-      --accent-contrast: #ffffff;
-      --focus: 2px solid #a5b4fc;
-    }
-
+    html.theme-dark { --bg:#1e1e1e; --text:#e5e7eb; --muted:#a1a1aa; --card:#262626; --border:#3f3f46; --shadow:0 12px 28px rgba(0,0,0,0.35); }
     *, *::before, *::after { box-sizing: border-box; }
     html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
+    body { margin: 0; font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px clamp(16px, 4vw, 28px);
-    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px clamp(16px, 4vw, 28px); }
 
-    header[role="banner"] {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 8px 0 18px;
-    }
-    .title {
-      display: flex; align-items: center; gap: 12px;
-    }
-    .title h1 {
-      font: 700 clamp(1.1rem, 2.2vw, 1.6rem)/1.2 Inter, system-ui, sans-serif;
-      margin: 0;
-    }
+    header[role="banner"] { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 0 12px; }
+    .title { display: flex; align-items: center; gap: 12px; }
+    .title h1 { font: 700 clamp(1.1rem, 2.2vw, 1.6rem)/1.2 Inter, system-ui, sans-serif; margin: 0; }
     .title small { color: var(--muted); }
 
-    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn {
-      appearance: none; border: 1px solid var(--border); background: var(--card);
-      color: var(--text); padding: 10px 14px; border-radius: 10px; cursor: pointer;
-      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition);
-      box-shadow: var(--shadow);
-      font-weight: 600; letter-spacing: 0.2px;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .btn:focus-visible { outline: var(--focus); outline-offset: 2px; }
-    .btn-primary { background: var(--accent); color: var(--accent-contrast); border-color: transparent; }
-    .btn-ghost { background: transparent; }
-    .toggle {
-      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px;
-      border: 1px solid var(--border); background: var(--card); cursor: pointer; box-shadow: var(--shadow);
-    }
+    .toggle { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); cursor: pointer; box-shadow: var(--shadow); }
     .toggle input { appearance: none; width: 36px; height: 22px; background: var(--border); border-radius: 999px; position: relative; outline: none; cursor: pointer; }
     .toggle input::after { content: ""; position: absolute; inset: 3px; width: 16px; height: 16px; background: var(--card); border-radius: 50%; transition: transform var(--transition); box-shadow: var(--shadow); }
-    html.theme-dark .toggle input { background: #4b5563; }
-    .toggle input:checked::after { transform: translateX(14px); }
+    html.theme-dark .toggle input { background: #4b5563; } .toggle input:checked::after { transform: translateX(14px); }
 
-    main[role="main"] {
-      display: grid; gap: 18px;
-      grid-template-columns: 1fr; /* stacked on mobile */
-    }
-    @media (min-width: 880px) {
-      main[role="main"] { grid-template-columns: 1.2fr 1fr; }
-    }
+    /* Keyboard shortcuts banner (desktop only) */
+    .kbd-banner { display: none; margin: 8px 0 18px; }
+    .kbd-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .kbd-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 6px 10px; border-radius: 999px; }
+    .kbd-pill kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--bg); border: 1px solid var(--border); padding: 2px 6px; border-radius: 6px; }
+    @media (min-width: 700px) { .kbd-banner { display: block; } }
 
-    .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
-      box-shadow: var(--shadow); padding: 16px clamp(14px, 3vw, 20px);
-      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    /* GRID with areas to control order on mobile vs desktop */
+    main[role="main"] { display: grid; gap: 18px; grid-template-columns: 1fr; grid-template-areas:
+      "controls"
+      "palette"
+      "fonts"
+      "colorprev"
+      "favorites"; }
+    @media (min-width: 960px) {
+      main[role="main"] { grid-template-columns: 1fr 1fr; grid-template-areas:
+        "controls fonts"
+        "palette  fonts"
+        "favorites fonts"; align-items:start; }
     }
+    .area-controls { grid-area: controls; }
+    .area-palette  { grid-area: palette; }
+    .area-fonts    { grid-area: fonts; }
+    .area-colorprev{ grid-area: colorprev; }
+    .area-favorites{ grid-area: favorites; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px clamp(14px, 3vw, 20px); transition: background var(--transition), color var(--transition), border-color var(--transition); }
     .card h2 { font: 700 1rem/1.2 Inter, system-ui, sans-serif; margin: 0 0 10px; }
     .card p { color: var(--muted); margin: 0 0 8px; }
 
     .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { appearance: none; border: 1px solid var(--border); background: var(--card); color: var(--text); padding: 10px 14px; border-radius: 10px; cursor: pointer; transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition); box-shadow: var(--shadow); font-weight: 600; letter-spacing: 0.2px; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:focus-visible { outline: var(--focus); outline-offset: 2px; }
+    .btn-primary { background: var(--accent); color: var(--accent-contrast); border-color: transparent; }
+    .btn-ghost { background: transparent; }
 
-    .palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; align-items: stretch; }
-    .swatch {
-      display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
-      border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card);
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
+    /* Influencer controls */
+    .influencers { display: grid; gap: 10px; grid-template-columns: 1fr; margin-top: 10px; }
+    @media (min-width: 600px) { .influencers { grid-template-columns: repeat(3, 1fr); } }
+    .field { display: grid; gap: 6px; }
+    .field label { font-weight: 600; font-size: 0.9rem; }
+    .field input[type="color"], .field input[type="range"], .field select { width: 100%; }
+
+    /* Base color row: keep checkbox + text on ONE line across viewports */
+    .base-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .base-opt { display: inline-flex; align-items: center; gap: 6px; margin-top: 0; white-space: nowrap; }
+    @media(max-width:600px){ #baseColor{ max-width: 140px; } }
+
+    .palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; align-items: stretch; }
+    .swatch { display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card); }
     .swatch__color { width: 100%; height: var(--swatch-size); }
-    .swatch__meta { display: flex; align-items: center; justify-content: space-between; padding: 10px; }
+    .swatch__meta { display: grid; gap: 6px; padding: 10px; }
     .hex { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.95rem; }
-    .copy { appearance: none; background: transparent; border: none; color: var(--accent); cursor: pointer; font-weight: 700; }
-    .copy:focus-visible { outline: var(--focus); border-radius: 6px; }
+    .copy { appearance: none; background: transparent; border: 1px dashed var(--border); padding: 4px 6px; border-radius: 8px; color: var(--accent); cursor: pointer; font-weight: 700; width: max-content; }
+    .copy:focus-visible { outline: var(--focus); border-radius: 8px; }
 
     .badges { display: inline-flex; gap: 6px; flex-wrap: wrap; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem;
-      border: 1px solid var(--border); background: var(--bg); color: var(--text);
-    }
-    .badge.pass { border-color: #16a34a44; }
-    .badge.fail { border-color: #ef444444; opacity: 0.9; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+    .badge.pass { border-color: #16a34a66; color: #065f46; }
+    .badge.fail { border-color: #ef444466; color: #7f1d1d; }
 
     .pairing { display: grid; gap: 14px; }
     .pairing__names { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
     .pairing__names code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--bg); border: 1px solid var(--border); padding: 3px 6px; border-radius: 8px; }
 
-    .preview {
-      border: 1px dashed var(--border); border-radius: 12px; padding: clamp(12px, 2.5vw, 20px); background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.00));
-    }
+    .preview { border: 1px dashed var(--border); border-radius: 12px; padding: clamp(12px, 2.5vw, 20px); background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.00)); }
     .preview h3 { margin: 0 0 4px; font-size: clamp(1.4rem, 2.5vw, 1.8rem); }
     .preview p { margin: 0 0 12px; color: #111827; }
     html.theme-dark .preview p { color: #d1d5db; }
     .preview .sample-btn { border: 1px solid #d1d5db; background: #fff; color: #111827; padding: 8px 12px; border-radius: 10px; cursor: default; }
     html.theme-dark .preview .sample-btn { background: #1f2937; border-color: #374151; color: #e5e7eb; }
 
+    /* Practical color UI preview (uses --color-* vars) */
+    .ui-preview { display: grid; gap: 10px; }
+    .ui-card { border: 1px solid var(--border); background: var(--card); border-radius: 12px; padding: 12px; }
+    .ui-header { background: var(--color-1, #111827); color: white; padding: 10px 12px; border-radius: 8px; font-weight: 700; }
+    .ui-chip { display: inline-block; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--color-3, #e5e7eb); }
+    .ui-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ui-btn { padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); cursor: default; background: var(--color-3, #e5e7eb); color: #111827; }
+    .ui-btn.primary { background: var(--color-2, #6366f1); color: #ffffff; border-color: transparent; }
+    .ui-btn.ghost { background: transparent; }
+    .ui-link { color: var(--color-4, #3b82f6); text-decoration: underline; cursor: default; }
+
     .favorites { display: grid; gap: 10px; }
     .fav-item { display: grid; gap: 10px; grid-template-columns: 1fr auto; align-items: center; border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: var(--card); }
     .fav-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .mini-swatches { display: inline-flex; gap: 4px; }
     .mini { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border); }
+    .fav-actions { display:flex; gap:6px; }
 
     footer { margin-top: 18px; color: var(--muted); font-size: 0.9rem; }
 
-    /* Focus-visible baseline */
-    :where(button, [role="button"], a, input, summary, details) { outline: none; }
-    :where(button, [role="button"], a, input, summary, details):focus-visible { outline: var(--focus); outline-offset: 2px; }
+    :where(button,[role="button"],a,input,summary,details){ outline:none; }
+    :where(button,[role="button"],a,input,summary,details):focus-visible{ outline: var(--focus); outline-offset:2px; }
 
-    /* Motion safety */
     .fade-in { opacity: 0; transform: translateY(6px); animation: fadeIn var(--transition) forwards; }
     @keyframes fadeIn { to { opacity: 1; transform: none; } }
-    @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation: none !important; }
-    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+    .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,1px,1px); white-space: nowrap; border: 0; }
   </style>
 </head>
 <body>
   <div class="container">
     <header role="banner" aria-label="Header">
       <div class="title">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="10" stroke="var(--accent)" stroke-width="2"/>
-          <path d="M12 6v12M6 12h12" stroke="var(--accent)" stroke-width="2"/>
-        </svg>
-        <div>
-          <h1>Random Aesthetic Generator</h1>
-          <small>Polished palettes & font pairings — static, accessible, production-ready</small>
-        </div>
+        <h1>Random Aesthetic Generator</h1>
+        <small>Polished palettes & font pairings — static, accessible, production-ready</small>
       </div>
       <label class="toggle" aria-label="Toggle dark mode">
         <span aria-hidden="true">🌙</span>
@@ -191,9 +161,18 @@
       </label>
     </header>
 
+    <!-- Desktop keyboard shortcuts banner (hidden on mobile) -->
+    <section class="kbd-banner" aria-label="Keyboard shortcuts">
+      <div class="kbd-row">
+        <span class="kbd-pill"><strong>Shuffle</strong> <kbd>Space</kbd></span>
+        <span class="kbd-pill"><strong>Save</strong> <kbd>S</kbd></span>
+        <span class="kbd-pill"><strong>Copy CSS</strong> <kbd>C</kbd></span>
+      </div>
+    </section>
+
     <main role="main">
-      <!-- Left column: Controls + Palette + Pairing/Preview -->
-      <section aria-label="Generator" class="card">
+      <!-- CONTROLS (left-top on desktop, first on mobile) -->
+      <section aria-label="Controls" class="card area-controls">
         <h2>Controls</h2>
         <div class="controls" role="group" aria-label="Controls">
           <button id="shuffleBtn" class="btn btn-primary" aria-keyshortcuts="Space">Shuffle (Fonts + Colors)</button>
@@ -204,29 +183,76 @@
         </div>
         <p id="clearDesc" class="sr-only">Clear all saved favorites from localStorage.</p>
 
-        <div class="card" style="margin-top:14px" aria-label="Color palette">
-          <h2>Palette</h2>
-          <div id="palette" class="palette" aria-live="polite"></div>
+        <!-- ADJUSTMENT CONTROLS; checkbox label stays inline across viewports -->
+        <div class="influencers" role="group" aria-label="Palette influencers">
+          <div class="field">
+            <label for="baseColor">Base color</label>
+            <div class="base-row">
+              <input type="color" id="baseColor" value="#6366f1" aria-describedby="baseColorHint"/>
+              <div class="base-opt">
+                <input type="checkbox" id="lockFirst"/> <label for="lockFirst">Use as first swatch</label>
+              </div>
+            </div>
+            <small id="baseColorHint">Influences the palette's hue; optionally locks it as the first color.</small>
+          </div>
+          <div class="field">
+            <label for="satBias">Saturation</label>
+            <input type="range" id="satBias" min="-30" max="30" step="1" value="0"/>
+            <small>Bias −30 (muted) … +30 (vibrant)</small>
+          </div>
+          <div class="field">
+            <label for="countSelect">Swatch count</label>
+            <select id="countSelect" aria-label="Number of colors">
+              <option value="0" selected>Auto (4–6)</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+            <small>Optional fixed palette size.</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- PALETTE (left-middle desktop, second on mobile) -->
+      <section class="card area-palette" aria-label="Color palette">
+        <h2>Palette</h2>
+        <div id="palette" class="palette" aria-live="polite"></div>
+      </section>
+
+      <!-- FONTS & PREVIEW (right column) -->
+      <section class="card area-fonts" aria-label="Font pairing and preview">
+        <h2>Fonts & Preview</h2>
+        <div class="pairing">
+          <div class="pairing__names">
+            <div>Heading: <code id="headingName">—</code></div>
+            <div>Body: <code id="bodyName">—</code></div>
+          </div>
+          <div id="preview" class="preview" aria-label="Live Preview">
+            <h3 id="previewTitle">Design that speaks clearly</h3>
+            <p id="previewText">Readable body copy paired with expressive headings. This block stays neutral so your palette and fonts can shine. The sample button shows basic control styling only.</p>
+            <button class="sample-btn" type="button" aria-hidden="true">Sample Button</button>
+          </div>
         </div>
 
-        <div class="card" style="margin-top:14px" aria-label="Font pairing and preview">
-          <h2>Fonts & Preview</h2>
-          <div class="pairing">
-            <div class="pairing__names">
-              <div>Heading: <code id="headingName">—</code></div>
-              <div>Body: <code id="bodyName">—</code></div>
-            </div>
-            <div id="preview" class="preview" aria-label="Live Preview">
-              <h3 id="previewTitle">Design that speaks clearly</h3>
-              <p id="previewText">Readable body copy paired with expressive headings. This block stays neutral so your palette and fonts can shine. The sample button shows basic control styling only.</p>
-              <button class="sample-btn" type="button" aria-hidden="true">Sample Button</button>
+        <div class="card area-colorprev" aria-label="Practical color UI preview" style="margin-top:14px">
+          <h2>Color UI Preview</h2>
+          <div class="ui-preview">
+            <div class="ui-card">
+              <div class="ui-header">Section Header</div>
+              <p style="margin:10px 0 8px">Body text with a <span class="ui-chip">chip</span> and a <a class="ui-link" role="link" tabindex="0">link</a>.</p>
+              <div class="ui-actions">
+                <span class="ui-btn primary">Primary</span>
+                <span class="ui-btn">Default</span>
+                <span class="ui-btn ghost">Ghost</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Right column: Favorites -->
-      <aside aria-label="Favorites" class="card">
+      <!-- FAVORITES (left-bottom desktop, last on mobile) -->
+      <aside aria-label="Favorites" class="card area-favorites">
         <h2>Favorites</h2>
         <p>Save combinations and re-apply them. Stored locally under <code>aesthetic.favorites</code>.</p>
         <div id="favorites" class="favorites" aria-live="polite"></div>
@@ -238,77 +264,35 @@
       <p style="margin-top:6px">MIT License. Built for polish & range. No frameworks, no tracking.</p>
     </footer>
 
-    <!-- aria-live region for non-blocking announcements -->
     <div id="live" class="sr-only" aria-live="polite"></div>
   </div>
 
   <script defer>
   /* ============================================================
-   * Random Aesthetic Generator — Pure Static Implementation
-   * - Small, pure functions and clear organization
-   * - No third-party JS; lazy-load Google Fonts for selected pair
-   * - Accessibility: focus, keyboard shortcuts, contrast badges
-   * - Persistence: favorites & theme in localStorage
+   * Random Aesthetic Generator — v6
+   * - Fix: guard favorites without fonts to avoid errors; preview now reliably loads fonts
+   * - Fix: checkbox + label stay inline across viewports
+   * - Keep all v5 functionality and layout
    * ============================================================ */
 
-  // --------------------------- Utilities ---------------------------
-  const ls = {
-    get(key, fallback) {
-      try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
-    },
-    set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }
-  };
+  const ls = { get(k,f){ try{const v=localStorage.getItem(k); return v?JSON.parse(v):f;}catch{return f;} }, set(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch{} } };
+  const $ = (s, c=document) => c.querySelector(s);
+  const $$ = (s, c=document) => Array.from(c.querySelectorAll(s));
+  const live = (m)=>{ const el=$('#live'); if(el) el.textContent=m; };
 
-  const $ = (sel, ctx=document) => ctx.querySelector(sel);
-  const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
-  const live = (msg) => { const el = $('#live'); if (el) el.textContent = msg; };
+  async function copyToClipboard(text){ try{ await navigator.clipboard.writeText(text); live('Copied to clipboard'); return true;}catch{ const ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly',''); ta.style.position='absolute'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select(); let ok=false; try{ ok=document.execCommand('copy'); }catch{} document.body.removeChild(ta); live(ok?'Copied to clipboard':'Copy failed'); return ok; } }
 
-  async function copyToClipboard(text) {
-    try {
-      await navigator.clipboard.writeText(text);
-      live('Copied to clipboard');
-      return true;
-    } catch {
-      // Fallback: hidden textarea + execCommand
-      const ta = document.createElement('textarea');
-      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'absolute'; ta.style.left = '-9999px';
-      document.body.appendChild(ta); ta.select();
-      let ok = false; try { ok = document.execCommand('copy'); } catch {}
-      document.body.removeChild(ta);
-      live(ok ? 'Copied to clipboard' : 'Copy failed');
-      return ok;
-    }
-  }
+  // Color math
+  function hexToRgb(hex){ const s=hex.replace('#',''); const b=s.length===3?s.split('').map(c=>c+c).join(''):s; const n=parseInt(b,16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+  function rgbToHsl(r,g,b){ r/=255; g/=255; b/=255; const max=Math.max(r,g,b), min=Math.min(r,g,b); let h,s,l=(max+min)/2; if(max===min){ h=s=0; } else { const d=max-min; s=l>0.5? d/(2-max-min): d/(max+min); switch(max){ case r: h=(g-b)/d + (g<b?6:0); break; case g: h=(b-r)/d + 2; break; default: h=(r-g)/d + 4; } h/=6; } return { h: Math.round(h*360), s: Math.round(s*100), l: Math.round(l*100) }; }
+  function hexToHsl(hex){ const {r,g,b}=hexToRgb(hex); return rgbToHsl(r,g,b); }
+  function hslToHex(h,s,l){ s/=100; l/=100; const k = n => (n + h/30) % 12; const a = s * Math.min(l, 1 - l); const f = n => l - a * Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n), 1))); const toHex = x => Math.round(255*x).toString(16).padStart(2, '0'); return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`.toUpperCase(); }
+  function relLuminance({r,g,b}){ const sr=[r,g,b].map(v=>v/255).map(c=>c<=0.03928? c/12.92: Math.pow((c+0.055)/1.055,2.4)); return 0.2126*sr[0]+0.7152*sr[1]+0.0722*sr[2]; }
+  function contrastRatio(hex1,hex2){ const L1=relLuminance(hexToRgb(hex1)); const L2=relLuminance(hexToRgb(hex2)); const [light,dark]=L1>L2?[L1,L2]:[L2,L1]; return (light+0.05)/(dark+0.05); }
+  function checkContrast(fg,bg){ const ratio=contrastRatio(fg,bg); return { ratio, passAA: ratio>=4.5 }; }
+  const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 
-  // WCAG 2.1 contrast checker for normal text (AA threshold 4.5)
-  function hexToRgb(hex) {
-    const s = hex.replace('#','');
-    const b = s.length === 3 ? s.split('').map(c => c + c).join('') : s;
-    const num = parseInt(b, 16);
-    return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
-  }
-  function relLuminance({r,g,b}) {
-    const srgb = [r,g,b].map(v => v/255).map(c => c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4));
-    return 0.2126*srgb[0] + 0.7152*srgb[1] + 0.0722*srgb[2];
-  }
-  function contrastRatio(hex1, hex2) {
-    const L1 = relLuminance(hexToRgb(hex1));
-    const L2 = relLuminance(hexToRgb(hex2));
-    const [light, dark] = L1 > L2 ? [L1, L2] : [L2, L1];
-    return (light + 0.05) / (dark + 0.05);
-  }
-  function checkContrast(fg, bg) {
-    const ratio = contrastRatio(fg, bg);
-    return { ratio, passAA: ratio >= 4.5 };
-  }
-
-  // --------------------------- Fonts ---------------------------
-  // Curated list of families and suggested pairings (quality > quantity)
-  const FONT_POOL = [
-    'Inter', 'Source Sans 3', 'Roboto', 'Work Sans', 'Poppins', 'Rubik', 'Nunito', 'DM Sans', 'Urbanist', 'Quicksand',
-    'Lora', 'Merriweather', 'Crimson Text', 'Bitter', 'Playfair Display', 'Libre Baskerville', 'Spectral', 'Domine',
-    'Fira Sans', 'Karla'
-  ];
+  // Fonts
   const KNOWN_PAIRINGS = [
     { heading: 'Playfair Display', body: 'Source Sans 3' },
     { heading: 'Lora', body: 'Inter' },
@@ -321,265 +305,126 @@
     { heading: 'Domine', body: 'Inter' },
     { heading: 'Rubik', body: 'Source Sans 3' },
   ];
-  // Weights requested: headings 600/700, body 400/500/600
-  function googleFontsHref(h, b) {
-    const enc = (f, weights) => `${encodeURIComponent(f).replace(/%20/g,'+')}:wght@${weights}`;
-    const hW = '600;700';
-    const bW = '400;500;600';
-    return `https://fonts.googleapis.com/css2?family=${enc(h, hW)}&family=${enc(b, bW)}&display=swap`;
-  }
+  function googleFontsHref(h,b){ const enc=(f,w)=>`${encodeURIComponent(f).replace(/%20/g,'+')}:wght@${w}`; return `https://fonts.googleapis.com/css2?family=${enc(h,'600;700')}&family=${enc(b,'400;500;600')}&display=swap`; }
+  function pickFontPair(){ if(Math.random()<0.7) return structuredClone(KNOWN_PAIRINGS[Math.floor(Math.random()*KNOWN_PAIRINGS.length)]); const serifs=['Lora','Merriweather','Crimson Text','Bitter','Playfair Display','Libre Baskerville','Spectral','Domine']; const sans=['Inter','Source Sans 3','Roboto','Work Sans','Poppins','Rubik','Nunito','DM Sans','Urbanist','Karla','Fira Sans','Quicksand']; return { heading: serifs[Math.floor(Math.random()*serifs.length)], body: sans[Math.floor(Math.random()*sans.length)] }; }
+  function applyFonts(pair){ const link=$('#gf-dynamic'); link.href=googleFontsHref(pair.heading,pair.body); const p=$('#preview'); p.style.setProperty('--heading-font', `'${pair.heading}', serif`); p.style.setProperty('--body-font', `'${pair.body}', system-ui, sans-serif`); $('#previewTitle').style.fontFamily='var(--heading-font)'; $('#previewText').style.fontFamily='var(--body-font)'; $('#headingName').textContent=pair.heading; $('#bodyName').textContent=pair.body; }
 
-  function pickFontPair() {
-    // Prefer known pairings 70% of the time, otherwise random sans+serif mix
-    if (Math.random() < 0.7) return structuredClone(KNOWN_PAIRINGS[Math.floor(Math.random()*KNOWN_PAIRINGS.length)]);
-    const serifs = ['Lora','Merriweather','Crimson Text','Bitter','Playfair Display','Libre Baskerville','Spectral','Domine'];
-    const sans = ['Inter','Source Sans 3','Roboto','Work Sans','Poppins','Rubik','Nunito','DM Sans','Urbanist','Karla','Fira Sans','Quicksand'];
-    const heading = serifs[Math.floor(Math.random()*serifs.length)];
-    const body = sans[Math.floor(Math.random()*sans.length)];
-    return { heading, body };
-  }
+  // Defaults
+  const DEFAULTS = { Minimal: { palette: ['#1F2937','#6B7280','#E5E7EB','#F9FAFB','#111827'], fonts: { heading: 'Inter', body: 'Source Sans 3' } } };
 
-  function applyFonts(pair) {
-    // Lazy-load via a single dynamic <link> to keep requests minimal
-    const link = document.getElementById('gf-dynamic');
-    link.href = googleFontsHref(pair.heading, pair.body);
-    // Apply to preview only to keep app shell neutral
-    const preview = document.getElementById('preview');
-    preview.style.setProperty('--heading-font', `'${pair.heading}', serif`);
-    preview.style.setProperty('--body-font', `'${pair.body}', system-ui, sans-serif`);
-    $('#previewTitle').style.fontFamily = `var(--heading-font)`;
-    $('#previewText').style.fontFamily = `var(--body-font)`;
-    $('#headingName').textContent = pair.heading;
-    $('#bodyName').textContent = pair.body;
-  }
-
-  // --------------------------- Palettes ---------------------------
-  // 3 curated defaults to avoid empty initial render
-  const DEFAULTS = {
-    Minimal: {
-      palette: ['#1F2937','#6B7280','#E5E7EB','#F9FAFB','#111827'],
-      fonts: { heading: 'Inter', body: 'Source Sans 3' }
-    },
-    Playful: {
-      palette: ['#FDE68A','#FCA5A5','#A7F3D0','#93C5FD','#FBCFE8'],
-      fonts: { heading: 'Poppins', body: 'Rubik' }
-    },
-    Bold: {
-      palette: ['#111827','#EF4444','#10B981','#3B82F6','#F59E0B'],
-      fonts: { heading: 'Playfair Display', body: 'Inter' }
+  // Palette generator with influencers
+  function getRandomPalette(opts={}){
+    const { baseHex, satBias=0, fixedCount=0, lockFirst=false } = opts;
+    const baseHue = baseHex ? hexToHsl(baseHex).h : Math.floor(Math.random()*360);
+    const autoCount = 4 + Math.floor(Math.random()*3); // 4–6
+    const count = fixedCount || autoCount;
+    const colors=[]; const mode = Math.random();
+    for(let i=0;i<count;i++){
+      let h = (baseHue + (mode<0.5? (i-1)*18 : (i-1)*35) + 360) % 360;
+      let s = clamp(45 + (Math.random()*30) + satBias, 20, 95);
+      let l = clamp(40 + (i*6) + (Math.random()*10 - 5), 15, 90);
+      colors.push(hslToHex(h,s,l));
     }
-  };
-
-  function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
-
-  function hslToHex(h, s, l) {
-    // h in [0,360), s/l in [0,100]
-    s/=100; l/=100;
-    const k = n => (n + h/30) % 12;
-    const a = s * Math.min(l, 1 - l);
-    const f = n => l - a * Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n), 1)));
-    const toHex = x => Math.round(255*x).toString(16).padStart(2, '0');
-    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`.toUpperCase();
+    if (Math.random()<0.2) colors.splice(1,0, Math.random()<0.5? '#111827':'#F9FAFB');
+    if (lockFirst && baseHex) colors[0]=baseHex.toUpperCase();
+    return colors.slice(0,6);
   }
 
-  function getRandomPalette() {
-    // Strategy: pick a base hue and build 4-6 swatches using 
-    // analogous/triad + lightness/contrast variation for practical UIs
-    const baseH = Math.floor(Math.random()*360);
-    const count = 4 + Math.floor(Math.random()*3); // 4–6
-    const hues = [];
-    const mode = Math.random();
-    for (let i=0; i<count; i++) {
-      const offset = mode < 0.5 ? (i-1) * 18 : (i-1) * 35; // analogous vs triad-ish
-      let h = (baseH + offset + 360) % 360;
-      const s = clamp(45 + (Math.random()*30), 35, 85);
-      const l = clamp(40 + (i*6) + (Math.random()*10 - 5), 20, 85);
-      hues.push(hslToHex(h, s, l));
-    }
-    // Ensure a near-neutral included ~20% for practical text/background
-    if (Math.random() < 0.2) hues.splice(1, 0, Math.random() < 0.5 ? '#111827' : '#F9FAFB');
-    return hues.slice(0, 6);
-  }
-
-  // --------------------------- Rendering ---------------------------
-  function renderPalette(colors) {
-    const el = document.getElementById('palette');
-    el.innerHTML = '';
-    colors.forEach((hex, idx) => {
-      const sw = document.createElement('div'); sw.className = 'swatch fade-in'; sw.tabIndex = 0; sw.setAttribute('role','group'); sw.setAttribute('aria-label', `Swatch ${idx+1} ${hex}`);
-      const color = document.createElement('div'); color.className = 'swatch__color'; color.style.background = hex; color.setAttribute('aria-hidden','true');
-      const meta = document.createElement('div'); meta.className = 'swatch__meta';
-
-      const hexBtn = document.createElement('button');
-      hexBtn.className = 'copy'; hexBtn.textContent = hex; hexBtn.setAttribute('title', 'Copy HEX');
-      hexBtn.addEventListener('click', () => copyToClipboard(hex));
-      hexBtn.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ copyToClipboard(hex); }});
-      hexBtn.setAttribute('aria-label', `Copy ${hex}`);
-      hexBtn.classList.add('hex');
-
-      const badges = document.createElement('div'); badges.className = 'badges';
-      const w = checkContrast('#FFFFFF', hex); // white text on swatch background
-      const b = checkContrast('#000000', hex); // black text on swatch background
-      const badgeW = document.createElement('span');
-      badgeW.className = `badge ${w.passAA ? 'pass' : 'fail'}`;
-      badgeW.innerHTML = `<strong>W</strong> <span aria-hidden="true">${w.passAA ? 'AA ✓' : 'AA ✗'}</span>`;
-      badgeW.setAttribute('role','img');
-      badgeW.setAttribute('aria-label', `White on ${hex} contrast ${w.ratio.toFixed(2)} ${w.passAA ? 'passes' : 'fails'} AA`);
-
-      const badgeB = document.createElement('span');
-      badgeB.className = `badge ${b.passAA ? 'pass' : 'fail'}`;
-      badgeB.innerHTML = `<strong>B</strong> <span aria-hidden="true">${b.passAA ? 'AA ✓' : 'AA ✗'}</span>`;
-      badgeB.setAttribute('role','img');
-      badgeB.setAttribute('aria-label', `Black on ${hex} contrast ${b.ratio.toFixed(2)} ${b.passAA ? 'passes' : 'fails'} AA`);
-
-      badges.append(badgeW, badgeB);
-      meta.append(hexBtn, badges);
-      sw.append(color, meta);
-      el.append(sw);
+  // Renderers
+  function renderPalette(colors){ const el=$('#palette'); el.innerHTML=''; colors.forEach((hex,idx)=>{
+      const sw=document.createElement('div'); sw.className='swatch fade-in'; sw.tabIndex=0; sw.setAttribute('role','group'); sw.setAttribute('aria-label',`Swatch ${idx+1} ${hex}`);
+      const color=document.createElement('div'); color.className='swatch__color'; color.style.background=hex; color.setAttribute('aria-hidden','true');
+      const meta=document.createElement('div'); meta.className='swatch__meta';
+      const hexBtn=document.createElement('button'); hexBtn.className='copy hex'; hexBtn.textContent=hex; hexBtn.title='Copy HEX'; hexBtn.addEventListener('click',()=>copyToClipboard(hex)); hexBtn.setAttribute('aria-label',`Copy ${hex}`);
+      const badges=document.createElement('div'); badges.className='badges';
+      const w=checkContrast('#FFFFFF',hex); const b=checkContrast('#000000',hex);
+      const badgeW=document.createElement('span'); badgeW.className=`badge ${w.passAA?'pass':'fail'}`; badgeW.innerHTML=`<strong>W</strong> <span aria-hidden="true">${w.passAA?'AA ✓':'AA ✗'}</span>`; badgeW.setAttribute('role','img'); badgeW.setAttribute('aria-label',`White on ${hex} contrast ${w.ratio.toFixed(2)} ${w.passAA?'passes':'fails'} AA`);
+      const badgeB=document.createElement('span'); badgeB.className=`badge ${b.passAA?'pass':'fail'}`; badgeB.innerHTML=`<strong>B</strong> <span aria-hidden="true">${b.ratio.toFixed(2)} ${b.passAA?'AA ✓':'AA ✗'}</span>`; badgeB.setAttribute('role','img'); badgeB.setAttribute('aria-label',`Black on ${hex} contrast ${b.ratio.toFixed(2)} ${b.passAA?'passes':'fails'} AA`);
+      badges.append(badgeW,badgeB);
+      meta.append(hexBtn,badges); sw.append(color,meta); el.append(sw);
     });
   }
+  function renderPreview(pair){ applyFonts(pair); }
 
-  function renderPreview(pair) {
-    applyFonts(pair);
-  }
+  // Export helpers
+  function exportCSSVars(state){ const lines=[]; state.palette.forEach((hex,i)=>lines.push(`  --color-${i+1}: ${hex};`)); lines.push(`  --font-heading: '${state.fonts.heading}', serif;`); lines.push(`  --font-body: '${state.fonts.body}', system-ui, sans-serif;`); const cssBlock=`:root{\n${lines.join('\n')}\n}`; copyToClipboard(cssBlock); return cssBlock; }
+  function exportJSON(state){ const obj={ palette: state.palette, fonts: { ...state.fonts } }; const json=JSON.stringify(obj,null,2); const blob=new Blob([json],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='aesthetic.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a); copyToClipboard(json); return json; }
 
-  // --------------------------- Export ---------------------------
-  function exportCSSVars(state) {
-    const lines = [];
-    state.palette.forEach((hex, i) => lines.push(`  --color-${i+1}: ${hex};`));
-    lines.push(`  --font-heading: '${state.fonts.heading}', serif;`);
-    lines.push(`  --font-body: '${state.fonts.body}', system-ui, sans-serif;`);
-    const cssBlock = `:root{\n${lines.join('\n')}\n}`;
-    copyToClipboard(cssBlock);
-    return cssBlock;
-  }
+  // Favorites
+  function loadFavorites(){ return ls.get('aesthetic.favorites',[]); }
+  function saveFavorites(list){ ls.set('aesthetic.favorites',list); }
+  function saveFavorite(state){ const favs=loadFavorites(); const entry={ id: (crypto.randomUUID? crypto.randomUUID(): String(Date.now())), ...state }; favs.unshift(entry); saveFavorites(favs); renderFavorites(); live('Saved to favorites'); }
+  function renderFavorites(){ const host=$('#favorites'); host.innerHTML=''; const favs=loadFavorites(); if(!favs.length){ host.innerHTML='<p>No favorites yet. Generate and Save combinations.</p>'; return; }
+    favs.forEach(f=>{
+      const item=document.createElement('div'); item.className='fav-item';
+      const meta=document.createElement('div'); meta.className='fav-meta';
+      const minis=document.createElement('div'); minis.className='mini-swatches';
+      (f.palette||[]).slice(0,6).forEach(h=>{ const m=document.createElement('span'); m.className='mini'; m.style.background=h; minis.append(m); });
 
-  function exportJSON(state) {
-    const obj = { palette: state.palette, fonts: { ...state.fonts } };
-    const json = JSON.stringify(obj, null, 2);
-    // Offer a download to satisfy offline use
-    const blob = new Blob([json], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'aesthetic.json';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    // Also copy (handy in design tools / chat)
-    copyToClipboard(json);
-    return json;
-  }
+      // SAFE label build (avoid innerHTML on possibly incomplete objects)
+      const label=document.createElement('div');
+      const safeFonts = (f.fonts && typeof f.fonts=== 'object') ? f.fonts : { heading: '—', body: '—' };
+      const strong=document.createElement('strong'); strong.textContent = safeFonts.heading || '—';
+      label.appendChild(strong); label.append(' / ', safeFonts.body || '—');
 
-  // --------------------------- Favorites ---------------------------
-  function loadFavorites() { return ls.get('aesthetic.favorites', []); }
-  function saveFavorites(list) { ls.set('aesthetic.favorites', list); }
+      meta.append(minis,label);
 
-  function saveFavorite(state) {
-    const favs = loadFavorites();
-    const entry = { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), ...state };
-    favs.unshift(entry); // newest first
-    saveFavorites(favs);
-    renderFavorites();
-    live('Saved to favorites');
-  }
+      const actions=document.createElement('div'); actions.className='fav-actions';
+      const apply=document.createElement('button'); apply.className='btn'; apply.textContent='Apply'; apply.addEventListener('click',()=>applyState({ palette: f.palette || [], fonts: f.fonts || state.fonts || pickFontPair() }));
+      const del=document.createElement('button'); del.className='btn btn-ghost'; del.textContent='Delete'; del.addEventListener('click',()=>{ removeFavorite(f.id); });
+      actions.append(apply,del);
 
-  function renderFavorites() {
-    const host = document.getElementById('favorites'); host.innerHTML = '';
-    const favs = loadFavorites();
-    if (!favs.length) { host.innerHTML = '<p>No favorites yet. Generate and Save combinations.</p>'; return; }
-    favs.forEach(f => {
-      const item = document.createElement('div'); item.className = 'fav-item';
-      const meta = document.createElement('div'); meta.className = 'fav-meta';
-      const minis = document.createElement('div'); minis.className = 'mini-swatches';
-      f.palette.slice(0,6).forEach(h => { const m = document.createElement('span'); m.className = 'mini'; m.style.background = h; minis.append(m); });
-      const label = document.createElement('div'); label.innerHTML = `<strong>${f.fonts.heading}</strong> / ${f.fonts.body}`;
-      meta.append(minis, label);
-      const actions = document.createElement('div');
-      const apply = document.createElement('button'); apply.className = 'btn'; apply.textContent = 'Apply'; apply.addEventListener('click', () => applyState(f));
-      const del = document.createElement('button'); del.className = 'btn btn-ghost'; del.textContent = 'Delete'; del.addEventListener('click', () => { removeFavorite(f.id); });
-      actions.append(apply, del);
-      item.append(meta, actions);
-      host.append(item);
+      item.append(meta,actions); host.append(item);
     });
   }
+  function removeFavorite(id){ const next=loadFavorites().filter(x=>x.id!==id); saveFavorites(next); renderFavorites(); live('Favorite deleted'); }
 
-  function removeFavorite(id) {
-    const next = loadFavorites().filter(x => x.id !== id);
-    saveFavorites(next);
-    renderFavorites();
-    live('Favorite deleted');
-  }
+  // State & Apply
+  const state={ palette: [], fonts: { heading:'', body:'' } };
+  const ui={ baseColor: '#6366f1', satBias: 0, fixedCount: 0, lockFirst:false };
 
-  // --------------------------- State & Apply ---------------------------
-  const state = { palette: [], fonts: { heading: '', body: '' } };
-
-  function applyState(next) {
-    state.palette = [...next.palette];
-    state.fonts = { ...next.fonts };
+  function applyState(next){
+    // Defensive: if fonts missing, choose a pair so preview always has valid families
+    const nextFonts = (next.fonts && next.fonts.heading && next.fonts.body) ? next.fonts : (state.fonts.heading ? state.fonts : pickFontPair());
+    state.palette=[...(next.palette||[])];
+    state.fonts={...nextFonts};
     renderPalette(state.palette);
     renderPreview(state.fonts);
-    // Update CSS variables on :root for external copy convenience
-    const root = document.documentElement;
-    state.palette.forEach((hex, i) => root.style.setProperty(`--color-${i+1}`, hex));
-    root.style.setProperty('--font-heading', `'${state.fonts.heading}', serif`);
-    root.style.setProperty('--font-body', `'${state.fonts.body}', system-ui, sans-serif`);
+    const root=document.documentElement;
+    state.palette.forEach((hex,i)=> root.style.setProperty(`--color-${i+1}`,hex));
+    root.style.setProperty('--font-heading',`'${state.fonts.heading}', serif`);
+    root.style.setProperty('--font-body',`'${state.fonts.body}', system-ui, sans-serif`);
   }
 
-  function shuffleAll() {
-    const next = { palette: getRandomPalette(), fonts: pickFontPair() };
-    applyState(next);
-    live('Shuffled fonts and colors');
-  }
+  function shuffleAll(){ const next={ palette: getRandomPalette({ baseHex: ui.baseColor, satBias: ui.satBias, fixedCount: ui.fixedCount, lockFirst: ui.lockFirst }), fonts: pickFontPair() }; applyState(next); live('Shuffled fonts and colors'); }
 
-  // --------------------------- Theme ---------------------------
-  function loadTheme() { return ls.get('aesthetic.settings', { theme: 'light' }).theme; }
-  function saveTheme(theme) { ls.set('aesthetic.settings', { theme }); }
-  function applyTheme(theme) {
-    const html = document.documentElement;
-    html.classList.toggle('theme-dark', theme === 'dark');
-    html.classList.toggle('theme-light', theme !== 'dark');
-    const tgl = document.getElementById('themeToggle');
-    if (tgl) { tgl.checked = theme === 'dark'; $('#themeLabel').textContent = theme === 'dark' ? 'Dark mode' : 'Light mode'; tgl.setAttribute('aria-checked', theme==='dark' ? 'true':'false'); }
-  }
+  // Theme (kept minimal here)
+  function loadTheme(){ return ls.get('aesthetic.settings',{theme:'light'}).theme; }
+  function saveTheme(theme){ ls.set('aesthetic.settings',{theme}); }
+  function applyTheme(theme){ const html=document.documentElement; html.classList.toggle('theme-dark', theme==='dark'); html.classList.toggle('theme-light', theme!=='dark'); const tgl=$('#themeToggle'); if(tgl){ tgl.checked=theme==='dark'; $('#themeLabel').textContent = theme==='dark' ? 'Dark mode' : 'Light mode'; tgl.setAttribute('aria-checked', theme==='dark' ? 'true' : 'false'); } }
 
-  // --------------------------- Bootstrap ---------------------------
-  function initDefaults() {
-    // Start with Minimal for first render, but provide 3 curated presets
-    const minimal = DEFAULTS.Minimal;
-    applyState(minimal);
-  }
+  function bindUI(){
+    $('#shuffleBtn').addEventListener('click',shuffleAll);
+    $('#saveBtn').addEventListener('click',()=>saveFavorite(state));
+    $('#copyCssBtn').addEventListener('click',()=>exportCSSVars(state));
+    $('#exportJsonBtn').addEventListener('click',()=>exportJSON(state));
+    $('#clearFavsBtn').addEventListener('click',()=>{ saveFavorites([]); renderFavorites(); live('All favorites cleared'); });
 
-  function bindUI() {
-    $('#shuffleBtn').addEventListener('click', shuffleAll);
-    $('#saveBtn').addEventListener('click', () => saveFavorite(state));
-    $('#copyCssBtn').addEventListener('click', () => exportCSSVars(state));
-    $('#exportJsonBtn').addEventListener('click', () => exportJSON(state));
-    $('#clearFavsBtn').addEventListener('click', () => { saveFavorites([]); renderFavorites(); live('All favorites cleared'); });
+    // Influencers (live)
+    const baseColor=$('#baseColor'); const sat=$('#satBias'); const countSel=$('#countSelect'); const lockFirst=$('#lockFirst');
+    baseColor.addEventListener('input', (e)=>{ ui.baseColor = e.target.value; shuffleAll(); });
+    sat.addEventListener('input', (e)=>{ ui.satBias = parseInt(e.target.value,10) || 0; shuffleAll(); });
+    countSel.addEventListener('change',(e)=>{ ui.fixedCount = parseInt(e.target.value,10) || 0; shuffleAll(); });
+    lockFirst.addEventListener('change',(e)=>{ ui.lockFirst = e.target.checked; shuffleAll(); });
 
     // Theme toggle
-    const tgl = $('#themeToggle');
-    tgl.addEventListener('change', (e) => { const theme = e.target.checked ? 'dark' : 'light'; applyTheme(theme); saveTheme(theme); });
+    const tgl=$('#themeToggle'); tgl.addEventListener('change',(e)=>{ const theme=e.target.checked ? 'dark' : 'light'; applyTheme(theme); saveTheme(theme); });
 
-    // Keyboard shortcuts (global). Use keyup to avoid repeat; prevent Space scrolling.
-    window.addEventListener('keydown', (e) => {
-      if (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return; // don't hijack form fields
-      if (e.code === 'Space') { e.preventDefault(); shuffleAll(); }
-      if (e.key.toLowerCase() === 's') { e.preventDefault(); saveFavorite(state); }
-      if (e.key.toLowerCase() === 'c') { e.preventDefault(); exportCSSVars(state); }
-    });
+    // Keyboard shortcuts
+    window.addEventListener('keydown',(e)=>{ if(e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return; if(e.code==='Space'){ e.preventDefault(); shuffleAll(); } if(e.key.toLowerCase()==='s'){ e.preventDefault(); saveFavorite(state); } if(e.key.toLowerCase()==='c'){ e.preventDefault(); exportCSSVars(state); } });
   }
 
-  // Initialize
-  (function start() {
-    applyTheme(loadTheme());
-    bindUI();
-    renderFavorites();
-    initDefaults();
-  })();
-
+  (function start(){ applyTheme(loadTheme()); bindUI(); renderFavorites(); applyState({ ...DEFAULTS.Minimal }); })();
   </script>
-
-  <!-- SR-only utility -->
-  <style>
-    .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,1px,1px); white-space: nowrap; border: 0; }
-  </style>
 </body>
 </html>
