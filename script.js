@@ -110,7 +110,7 @@ function renderFavorites(){ const host=$('#favorites'); host.innerHTML=''; const
 function removeFavorite(id){ const next=loadFavorites().filter(x=>x.id!==id); saveFavorites(next); renderFavorites(); live('Favorite deleted'); }
 
 // State & Apply
-const state={ palette: [], fonts: { heading:'', body:'' } };
+const state={ palette: [], fonts: { heading:'', body:'' }, basePalette: [] };
 const ui={ baseColor: '#6366f1', satBias: 0, fixedCount: 0, lockFirst:false };
 
 function applyState(next){
@@ -126,7 +126,25 @@ function applyState(next){
   root.style.setProperty('--font-body',`'${state.fonts.body}', system-ui, sans-serif`);
 }
 
-function shuffleAll(){ const next={ palette: getRandomPalette({ baseHex: ui.baseColor, satBias: ui.satBias, fixedCount: ui.fixedCount, lockFirst: ui.lockFirst }), fonts: pickFontPair() }; applyState(next); live('Shuffled fonts and colors'); }
+function shuffleAll(){
+  const next={ palette: getRandomPalette({ baseHex: ui.baseColor, satBias: ui.satBias, fixedCount: ui.fixedCount, lockFirst: ui.lockFirst }), fonts: pickFontPair() };
+  // Reset baseline to the newly generated palette so saturation adjustments are relative
+  state.basePalette = next.palette.slice(0);
+  applyState(next);
+  live('Shuffled fonts and colors');
+}
+
+// Adjust only saturation using the baseline palette
+function applySaturationOnly(){
+  if(!state.basePalette.length){ state.basePalette = state.palette.slice(0); }
+  const bias = ui.satBias;
+  const adjusted = state.basePalette.map(hex=>{
+    const {h,s,l}=hexToHsl(hex);
+    const s2 = clamp(s + bias, 0, 100);
+    return hslToHex(h, s2, l);
+  });
+  applyState({ palette: adjusted });
+}
 
 // Theme (kept minimal here)
 function loadTheme(){ return ls.get('aesthetic.settings',{theme:'light'}).theme; }
@@ -143,7 +161,7 @@ function bindUI(){
   // Influencers (live)
   const baseColor=$('#baseColor'); const sat=$('#satBias'); const countSel=$('#countSelect'); const lockFirst=$('#lockFirst');
   baseColor.addEventListener('input', (e)=>{ ui.baseColor = e.target.value; shuffleAll(); });
-  sat.addEventListener('input', (e)=>{ ui.satBias = parseInt(e.target.value,10) || 0; shuffleAll(); });
+  sat.addEventListener('input', (e)=>{ ui.satBias = parseInt(e.target.value,10) || 0; applySaturationOnly(); });
   countSel.addEventListener('change',(e)=>{ ui.fixedCount = parseInt(e.target.value,10) || 0; shuffleAll(); });
   lockFirst.addEventListener('change',(e)=>{ ui.lockFirst = e.target.checked; shuffleAll(); });
 
@@ -154,4 +172,11 @@ function bindUI(){
   window.addEventListener('keydown',(e)=>{ if(e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return; if(e.code==='Space'){ e.preventDefault(); shuffleAll(); } if(e.key.toLowerCase()==='s'){ e.preventDefault(); saveFavorite(state); } if(e.key.toLowerCase()==='c'){ e.preventDefault(); exportCSSVars(state); } });
 }
 
-(function start(){ applyTheme(loadTheme()); bindUI(); renderFavorites(); applyState({ ...DEFAULTS.Minimal }); })();
+(function start(){
+  applyTheme(loadTheme());
+  bindUI();
+  renderFavorites();
+  applyState({ ...DEFAULTS.Minimal });
+  // Initialize baseline from the starting palette
+  state.basePalette = state.palette.slice(0);
+})();
