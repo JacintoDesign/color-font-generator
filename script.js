@@ -74,7 +74,9 @@ function renderPalette(colors){ const el=$('#palette'); el.innerHTML=''; colors.
     meta.append(hexBtn,badges); sw.append(color,meta); el.append(sw);
   });
 }
-function renderPreview(pair){ applyFonts(pair); }
+  function renderPreview(pair){
+    applyFonts(pair);
+  }
 
 // Export helpers
 function exportCSSVars(state){ const lines=[]; state.palette.forEach((hex,i)=>lines.push(`  --color-${i+1}: ${hex};`)); lines.push(`  --font-heading: '${state.fonts.heading}', serif;`); lines.push(`  --font-body: '${state.fonts.body}', system-ui, sans-serif;`); const cssBlock=`:root{\n${lines.join('\n')}\n}`; copyToClipboard(cssBlock); return cssBlock; }

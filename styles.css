@@ -486,11 +486,22 @@ main[role="main"] {
   border-radius: 12px;
   padding: clamp(12px, 2.5vw, 20px);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.0));
+  display: grid;
+  gap: 12px;
+  font-family: var(--body-font);
 }
 
 .preview h3 {
   margin: 0 0 4px;
   font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+}
+
+/* Headings inside preview (including integrated UI header) use the heading font */
+.preview h1,
+.preview h2,
+.preview h3,
+.preview .ui-header {
+  font-family: var(--heading-font);
 }
 
 .preview p {
@@ -556,9 +567,15 @@ html.theme-dark .preview .sample-btn {
   padding: 8px 12px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  cursor: default;
+  cursor: pointer;
   background: var(--color-3, #e5e7eb);
   color: #111827;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.ui-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
 }
 
 .ui-btn.primary {
