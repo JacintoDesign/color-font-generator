@@ -69,15 +69,17 @@ function getRandomPalette(opts={}){
 }
 
 // Renderers
-function renderPalette(colors){ const el=$('#palette'); el.innerHTML=''; colors.forEach((hex,idx)=>{
+  function renderPalette(colors){ const el=$('#palette'); el.innerHTML=''; colors.forEach((hex,idx)=>{
     const sw=document.createElement('div'); sw.className='swatch fade-in'; sw.tabIndex=0; sw.setAttribute('role','group'); sw.setAttribute('aria-label',`Swatch ${idx+1} ${hex}`);
     const color=document.createElement('div'); color.className='swatch__color'; color.style.background=hex; color.setAttribute('aria-hidden','true');
     const meta=document.createElement('div'); meta.className='swatch__meta';
     const hexBtn=document.createElement('button'); hexBtn.className='copy hex'; hexBtn.textContent=hex; hexBtn.title='Copy HEX'; hexBtn.addEventListener('click',()=>copyToClipboard(hex)); hexBtn.setAttribute('aria-label',`Copy ${hex}`);
     const badges=document.createElement('div'); badges.className='badges';
     const w=checkContrast('#FFFFFF',hex); const b=checkContrast('#000000',hex);
-    const badgeW=document.createElement('span'); badgeW.className=`badge ${w.passAA?'pass':'fail'}`; badgeW.innerHTML=`<strong>W</strong> <span aria-hidden="true">${w.passAA?'AA ✓':'AA ✗'}</span>`; badgeW.setAttribute('role','img'); badgeW.setAttribute('aria-label',`White on ${hex} contrast ${w.ratio.toFixed(2)} ${w.passAA?'passes':'fails'} AA`);
-    const badgeB=document.createElement('span'); badgeB.className=`badge ${b.passAA?'pass':'fail'}`; badgeB.innerHTML=`<strong>B</strong> <span aria-hidden="true">${b.ratio.toFixed(2)} ${b.passAA?'AA ✓':'AA ✗'}</span>`; badgeB.setAttribute('role','img'); badgeB.setAttribute('aria-label',`Black on ${hex} contrast ${b.ratio.toFixed(2)} ${b.passAA?'passes':'fails'} AA`);
+      const wRatio = +w.ratio.toFixed(1);
+      const bRatio = +b.ratio.toFixed(1);
+        const badgeW=document.createElement('span'); badgeW.className=`badge ${w.passAA?'pass':'fail'}`; badgeW.innerHTML=`<strong>W</strong> <span aria-hidden="true">${wRatio} ${w.passAA?'✓':'✗'}</span>`; badgeW.setAttribute('role','img'); badgeW.setAttribute('aria-label',`White on ${hex} contrast ${wRatio}: ${w.passAA?'passes':'fails'}`);
+        const badgeB=document.createElement('span'); badgeB.className=`badge ${b.passAA?'pass':'fail'}`; badgeB.innerHTML=`<strong>B</strong> <span aria-hidden="true">${bRatio} ${b.passAA?'✓':'✗'}</span>`; badgeB.setAttribute('role','img'); badgeB.setAttribute('aria-label',`Black on ${hex} contrast ${bRatio}: ${b.passAA?'passes':'fails'}`);
     badges.append(badgeW,badgeB);
     meta.append(hexBtn,badges); sw.append(color,meta); el.append(sw);
   });

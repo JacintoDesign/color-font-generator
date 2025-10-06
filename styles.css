@@ -462,9 +462,19 @@ main[role="main"] {
 }
 
 .badges {
-  display: inline-flex;
+  display: flex;
   gap: 6px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+@media (min-width: 960px) {
+  .badges {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: auto;
+  }
 }
 
 .badge {
@@ -478,6 +488,8 @@ main[role="main"] {
   background: var(--bg);
   color: var(--text);
 }
+
+.badge { white-space: nowrap; }
 
 .badge.pass {
   border-color: #16a34a66;
