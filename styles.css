@@ -227,27 +227,21 @@ main[role="main"] {
 }
 
 .controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns on all viewports */
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .controls-row {
-  display: contents; /* default: flow within flex wrap */
+  display: contents; /* let children become grid items */
 }
 
 @media (min-width: 960px) {
   .controls {
-    display: grid;
-    grid-template-columns: auto auto auto 1fr; /* all three shuffle buttons then spacer */
-    grid-auto-rows: minmax(0, auto);
-    align-items: center;
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr); /* desktop: 3 equal columns */
+    align-items: stretch;
   }
-  #shuffleBtn,
-  #shuffleColorsBtn,
-  #shuffleFontBtn { grid-row: 1; }
-  .controls-secondary { grid-column: 1 / -1; grid-row: 2; display: inline-flex; gap: 10px; }
+  .controls-secondary { display: contents; }
 }
 
 .btn {
@@ -263,6 +257,9 @@ main[role="main"] {
   font-weight: 600;
   letter-spacing: 0.2px;
 }
+
+/* Make control buttons stretch to fill their grid column */
+.controls .btn { width: 100%; padding: 10px 8px; }
 
 .btn:hover {
   transform: translateY(-1px);
