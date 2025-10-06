@@ -59,8 +59,9 @@ header[role="banner"] {
 
 .title {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 
 .title h1 {
@@ -150,6 +151,15 @@ html.theme-dark .toggle input {
 @media (min-width: 700px) {
   .kbd-banner {
     display: block;
+  }
+}
+
+/* Title layout: stack on mobile, row on desktop */
+@media (min-width: 700px) {
+  .title {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
   }
 }
 
