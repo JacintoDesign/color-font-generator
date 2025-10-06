@@ -150,6 +150,25 @@ function shuffleAll(){
   live('Shuffled fonts and colors');
 }
 
+// Shuffle only colors (preserve fonts)
+function shuffleColors(){
+  const newBase = randomBaseColor();
+  ui.baseColor = newBase;
+  const baseInput = document.getElementById('baseColor');
+  if(baseInput){ baseInput.value = newBase; }
+  const palette = getRandomPalette({ baseHex: ui.baseColor, satBias: ui.satBias, fixedCount: ui.fixedCount, lockFirst: ui.lockFirst });
+  state.basePalette = palette.slice(0);
+  applyState({ palette, fonts: state.fonts });
+  live('Shuffled colors');
+}
+
+// Shuffle only font pairing (preserve colors)
+function shuffleFont(){
+  const fonts = pickFontPair();
+  applyState({ palette: state.palette, fonts });
+  live('Shuffled font pairing');
+}
+
 // Adjust only saturation using the baseline palette
 function applySaturationOnly(){
   if(!state.basePalette.length){ state.basePalette = state.palette.slice(0); }
@@ -169,6 +188,8 @@ function applyTheme(theme){ const html=document.documentElement; html.classList.
 
 function bindUI(){
   $('#shuffleBtn').addEventListener('click',shuffleAll);
+  const sc=$('#shuffleColorsBtn'); if(sc) sc.addEventListener('click', shuffleColors);
+  const sf=$('#shuffleFontBtn'); if(sf) sf.addEventListener('click', shuffleFont);
   $('#saveBtn').addEventListener('click',()=>saveFavorite(state));
   $('#copyCssBtn').addEventListener('click',()=>exportCSSVars(state));
   $('#exportJsonBtn').addEventListener('click',()=>exportJSON(state));
