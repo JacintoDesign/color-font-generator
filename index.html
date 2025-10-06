@@ -45,12 +45,13 @@
           <button id="shuffleBtn" class="btn btn-primary" aria-keyshortcuts="Space">Shuffle All</button>
           <button id="shuffleColorsBtn" class="btn">Shuffle Colors</button>
           <button id="shuffleFontBtn" class="btn">Shuffle Font</button>
-          <button id="saveBtn" class="btn" aria-keyshortcuts="S">Save / Favorite</button>
-          <button id="copyCssBtn" class="btn" aria-keyshortcuts="C">Copy CSS Variables</button>
-          <button id="exportJsonBtn" class="btn">Export JSON</button>
-          <button id="clearFavsBtn" class="btn btn-ghost" title="Clears all favorites" aria-describedby="clearDesc">Clear Favorites</button>
+          <div class="controls-row controls-secondary" role="group" aria-label="Save and export">
+            <button id="saveBtn" class="btn" aria-keyshortcuts="S">Save</button>
+            <button id="copyCssBtn" class="btn" aria-keyshortcuts="C">Copy CSS</button>
+            <button id="exportJsonBtn" class="btn">Export</button>
+          </div>
         </div>
-        <p id="clearDesc" class="sr-only">Clear all saved favorites from localStorage.</p>
+        
 
         <!-- ADJUSTMENT CONTROLS; checkbox label stays inline across viewports -->
         <div class="influencers" role="group" aria-label="Palette influencers">
@@ -120,7 +121,9 @@
 
       <!-- FAVORITES (left-bottom desktop, last on mobile) -->
       <aside aria-label="Favorites" class="card area-favorites">
+        <button id="clearFavsBtn" class="btn btn-ghost btn-sm clear-favs" title="Clears all favorites" aria-describedby="clearDesc">Clear All</button>
         <h2>Favorites</h2>
+        <p id="clearDesc" class="sr-only">Clear all saved favorites from localStorage.</p>
         <p>Save combinations and re-apply them. Stored locally under <code>aesthetic.favorites</code>.</p>
         <div id="favorites" class="favorites" aria-live="polite"></div>
       </aside>

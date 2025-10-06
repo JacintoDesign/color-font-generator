@@ -222,6 +222,24 @@ main[role="main"] {
   flex-wrap: wrap;
 }
 
+.controls-row {
+  display: contents; /* default: flow within flex wrap */
+}
+
+@media (min-width: 960px) {
+  .controls {
+    display: grid;
+    grid-template-columns: auto auto auto 1fr; /* all three shuffle buttons then spacer */
+    grid-auto-rows: minmax(0, auto);
+    align-items: center;
+    gap: 10px;
+  }
+  #shuffleBtn,
+  #shuffleColorsBtn,
+  #shuffleFontBtn { grid-row: 1; }
+  .controls-secondary { grid-column: 1 / -1; grid-row: 2; display: inline-flex; gap: 10px; }
+}
+
 .btn {
   appearance: none;
   border: 1px solid var(--border);
@@ -632,6 +650,21 @@ html.theme-dark .preview .sample-btn {
 .fav-actions {
   display: flex;
   gap: 6px;
+}
+
+/* Small clear button in favorites top-right */
+.area-favorites {
+  position: relative;
+}
+.clear-favs {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+.btn-sm {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
 }
 
 footer {
