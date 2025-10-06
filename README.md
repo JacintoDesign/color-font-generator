@@ -1,42 +1,36 @@
-# Random Aesthetic Generator
+# Palette & Font Kit
 
-A fully static, accessible web application that generates cohesive **color palettes** and **font pairings** for design inspiration. Built without frameworks or build tools — just HTML, CSS, and JavaScript.
+A fully static, accessible web application that generates cohesive **color palettes** and **font pairings** for design inspiration. Built with plain HTML, CSS, and JavaScript — no frameworks or build tools.
 
 ---
 
 ## Features
 
-* **Randomized palettes**: Generates 3–6 color swatches with HEX values.
-* **Font pairings**: Dynamically loads curated Google Font pairs (heading + body) and renders them in a live preview.
-* **Contrast checks**: WCAG AA contrast badges for each swatch (vs. black and white).
-* **Interactive controls**:
-
-  * Shuffle fonts + colors (`Space` key or button).
-  * Save favorites (`S` key or button).
-  * Copy CSS variables (`C` key or button).
-  * Export JSON of the current combination.
-* **Customization**:
-
-  * Color picker to influence the palette’s base hue.
-  * Saturation slider.
-  * Swatch count selector (3–6).
-  * Option to lock the chosen base color as the first swatch.
-* **Favorites panel**:
-
+* Randomized palettes: Generates 3–6 color swatches with HEX values.
+* Font pairings: Dynamically loads curated Google Font pairs (heading + body) and renders them in a live preview.
+* Contrast checks: Badges show contrast vs white (W) and black (B), rounded to 1 decimal with pass/fail at AA threshold.
+* Unified live preview: A single preview combines sample typography with practical UI elements (header, chip, buttons, link) using your palette and fonts.
+* Interactive controls:
+  * Shuffle All (fonts + colors) — Space key or button.
+  * Shuffle Colors — button.
+  * Shuffle Font — button.
+  * Save favorites — S key or button.
+  * Copy CSS variables — C key or button.
+  * Export JSON — button.
+* Customization:
+  * Base color picker to influence the palette’s hue; optional “Use as first swatch”.
+  * Saturation slider that adjusts only the current palette’s saturation (hue/lightness preserved from the baseline).
+  * Swatch count selector (Auto 4–6, or 3–6 fixed).
+* Favorites panel:
   * Save, re-apply, and delete combinations.
-  * Stored in localStorage (`aesthetic.favorites`).
-* **Exporting**:
-
-  * Copy CSS variables block.
-  * Download/Copy JSON representation.
-* **UI Previews**:
-
-  * Font sample: Heading, paragraph, and button preview.
-  * Color UI sample: Header, chip, buttons, and link using the generated palette.
-* **Light/Dark theme toggle** (persists in localStorage under `aesthetic.settings`).
-* **Accessibility**:
-
-  * Semantic HTML, ARIA labels, focus states, keyboard navigation.
+  * “Clear All” button at the top-right of the panel.
+  * Stored in localStorage under `aesthetic.favorites`.
+* Exporting:
+  * Copy a CSS variables block for quick theming.
+  * Download or copy a JSON representation of the current combo.
+* Light/Dark theme toggle (persists in localStorage under `aesthetic.settings`).
+* Accessibility:
+  * Semantic HTML, ARIA labels, focus-visible outlines, keyboard navigation.
   * Respects `prefers-reduced-motion`.
 
 ---
@@ -53,7 +47,9 @@ A fully static, accessible web application that generates cohesive **color palet
 
 ## Project Structure
 
-* **index.html** – Single file containing HTML, inline CSS, and inline JS.
+* **index.html** – Markup and layout; loads external CSS/JS.
+* **styles.css** – All styles, including responsive layout and preview UI.
+* **script.js** – App logic (palette generation, fonts, favorites, exports).
 * **favicon.png** – App icon for GitHub Pages and browser tabs.
 
 ---
@@ -75,10 +71,11 @@ A fully static, accessible web application that generates cohesive **color palet
 
 ## Tech Notes
 
-* Google Fonts dynamically injected for each pairing (only loads what’s needed).
-* Small curated set of serif + sans fonts (≈96 possible pairings).
-* Color palettes generated in HSL space, adjusted by base color and saturation bias.
-* WCAG AA contrast computed per swatch against black and white.
+* Google Fonts are injected on the fly via a dedicated `<link>` element (`#gf-dynamic`), loading only what’s needed.
+* Curated serif/sans pairs plus lightweight random pairing for variety.
+* Palettes are generated in HSL space from a base hue with optional saturation bias.
+* The saturation slider modifies only saturation relative to a baseline, preserving the palette’s hue/lightness.
+* WCAG contrast is computed for each swatch vs black and white; badges display a rounded ratio and pass/fail state.
 
 ---
 
