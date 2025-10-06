@@ -22,6 +22,14 @@ function contrastRatio(hex1,hex2){ const L1=relLuminance(hexToRgb(hex1)); const 
 function checkContrast(fg,bg){ const ratio=contrastRatio(fg,bg); return { ratio, passAA: ratio>=4.5 }; }
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 
+// Generate a pleasant random base color (moderate saturation and lightness)
+function randomBaseColor(){
+  const h = Math.floor(Math.random()*360);
+  const s = 55 + Math.random()*30; // 55–85
+  const l = 45 + Math.random()*20; // 45–65
+  return hslToHex(h, s, l);
+}
+
 // Fonts
 const KNOWN_PAIRINGS = [
   { heading: 'Playfair Display', body: 'Source Sans 3' },
@@ -129,6 +137,12 @@ function applyState(next){
 }
 
 function shuffleAll(){
+  // Pick a new base color and reflect it in the UI control
+  const newBase = randomBaseColor();
+  ui.baseColor = newBase;
+  const baseInput = document.getElementById('baseColor');
+  if(baseInput){ baseInput.value = newBase; }
+
   const next={ palette: getRandomPalette({ baseHex: ui.baseColor, satBias: ui.satBias, fixedCount: ui.fixedCount, lockFirst: ui.lockFirst }), fonts: pickFontPair() };
   // Reset baseline to the newly generated palette so saturation adjustments are relative
   state.basePalette = next.palette.slice(0);
