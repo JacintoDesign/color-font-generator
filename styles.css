@@ -279,9 +279,84 @@ main[role="main"] {
   font-size: 0.9rem;
 }
 
+/* Desktop-only: tighten spacing between specific labels and controls */
+@media (min-width: 960px) {
+    .field label[for="satBias"],
+    .field label[for="countSelect"] {
+        display: block;          /* ensure vertical margin applies */
+        margin-bottom: -30px;     /* pull control closer to label */
+    }
+
+    .field input[id="satBias"] {
+        position: relative;
+        top: 2px;
+    }
+
+    .field select[id="countSelect"] {
+        position: relative;
+        top: -2px;
+    }
+
+    .sat-small {
+        position: relative;
+        top: -17px;
+    }
+
+    .count-small {
+        position: relative;
+        top: -22px;
+    }
+}
+
+/* Modern, consistent form controls */
+:root {
+  --control-h: 40px;
+  --control-radius: 10px;
+  --control-bg: var(--card);
+  --control-border: var(--border);
+}
+
 .field input[type="color"],
-.field input[type="range"],
 .field select {
+  width: 100%;
+  height: var(--control-h);
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: var(--control-bg);
+  box-shadow: var(--shadow);
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+}
+
+/* Select: custom arrow and neutral look */
+.field select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0 40px 0 12px; /* right space for arrow */
+  color: var(--text);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.field select:focus-visible,
+.field input[type="color"]:focus-visible {
+  outline: var(--focus);
+  outline-offset: 2px;
+}
+
+/* Color input: tidy up internal swatch with rounded corners */
+.field input[type="color"] {
+  padding: 0; /* color inputs ignore vertical padding visually */
+  cursor: pointer;
+}
+
+.field input[type="color"]::-webkit-color-swatch-wrapper { padding: 4px; border-radius: var(--control-radius); }
+.field input[type="color"]::-webkit-color-swatch { border: 1px solid var(--control-border); border-radius: calc(var(--control-radius) - 4px); }
+.field input[type="color"]::-moz-color-swatch { border: 1px solid var(--control-border); border-radius: calc(var(--control-radius) - 4px); }
+
+/* Keep range full width but don't apply height styling above */
+.field input[type="range"] {
   width: 100%;
 }
 
@@ -303,7 +378,7 @@ main[role="main"] {
 
 @media (max-width: 600px) {
   #baseColor {
-    max-width: 140px;
+    max-width: 180px;
   }
 }
 
